@@ -1,10 +1,10 @@
-package com.kylins.copy;
+package com.kylins.obj.copy;
 
 import android.text.TextUtils;
 
-import com.kylins.copy.annotation.DeepCopy;
-import com.kylins.copy.annotation.Ignore;
-import com.kylins.copy.annotation.Name;
+import com.kylins.obj.copy.annotation.DeepCopy;
+import com.kylins.obj.copy.annotation.Ignore;
+import com.kylins.obj.copy.annotation.Name;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -13,8 +13,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.kylins.copy.ObjectCopy.getField;
-import static com.kylins.copy.ObjectCopy.newInstance;
+import static com.kylins.obj.copy.ObjectCopy.getField;
+import static com.kylins.obj.copy.ObjectCopy.newInstance;
 
 /**
  * Created by zhouliangshun on 2016/8/4.

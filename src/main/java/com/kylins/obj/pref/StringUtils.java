@@ -1,4 +1,4 @@
-package com.kylins.preferencesobject;
+package com.kylins.obj.pref;
 
 /**
  * Created by j-zhouliangshun on 2016/6/24.
@@ -15,7 +15,6 @@ public class StringUtils {
         char[] cs=name.toCharArray();
         cs[0]-=32;
         return String.valueOf(cs);
-
     }
 
     /**

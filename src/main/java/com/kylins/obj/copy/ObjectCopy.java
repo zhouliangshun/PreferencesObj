@@ -1,10 +1,10 @@
-package com.kylins.copy;
+package com.kylins.obj.copy;
 
 import android.text.TextUtils;
 
-import com.kylins.copy.annotation.DeepCopy;
-import com.kylins.copy.annotation.Ignore;
-import com.kylins.copy.annotation.Name;
+import com.kylins.obj.copy.annotation.DeepCopy;
+import com.kylins.obj.copy.annotation.Ignore;
+import com.kylins.obj.copy.annotation.Name;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
