@@ -1,7 +1,30 @@
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        //classpath 'me.tatarka:gradle-retrolambda:3.2.3'
+        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion "23.0.3"
 
     defaultConfig {
@@ -16,13 +39,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions {
+        unitTests.all {
+            systemProperty 'robolectric.dependency.repo.url', 'http://maven.aliyun.com/nexus/content/groups/public/'
+            systemProperty 'robolectric.dependency.repo.id', 'sonatype'
+        }
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    //compile "com.crittercism.dexmaker:dexmaker:1.4"
-    //compile "com.crittercism.dexmaker:dexmaker-dx:1.4"
+    testCompile 'org.robolectric:robolectric:3.+'
 }
 
 //上传到服务器
