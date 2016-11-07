@@ -38,23 +38,12 @@ public class SharePref {
         }
 
         SharePreObject<T> object = new SharePreObject<T>(beanClass,context);
-        if(object.get()!=null) {
+        if(object.get()==null) {
             throw new NullPointerException("Can't build class:"+beanClass.getName());
         }
 
         instances.put(beanClass.getName(),object);
         return object.get();
-    }
-
-    /**
-     * reload valus from share preferences
-     * @param beanClass
-     * @param <T>
-     */
-    public static<T> void reload(Class<T> beanClass){
-        if(instances.containsKey(beanClass.getName())) {
-            instances.get(beanClass.getName()).destroy();
-        }
     }
 
     /**
