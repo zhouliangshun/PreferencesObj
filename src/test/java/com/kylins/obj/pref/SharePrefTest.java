@@ -1,5 +1,7 @@
 package com.kylins.obj.pref;
 
+import android.os.Build;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -7,6 +9,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  * Created by developer on 04/11/2016.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest=Config.NONE)
+@Config(manifest = Config.NONE)
 public class SharePrefTest {
     @Test
     public void getInstance() throws Exception {
@@ -39,7 +42,7 @@ public class SharePrefTest {
         assertEquals(testData.getE(), 10000);
         assertEquals(testData.isF(), true);
 
-        SharePref.destory();
+        SharePref.destroy();
 
     }
 

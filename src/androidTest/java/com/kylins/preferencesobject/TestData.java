@@ -11,9 +11,8 @@ public interface TestData {
 
     void setA(int a);
 
-    double getB();
-
-    void setB(double b);
+    HashSet<Integer> getB();
+    void setB(HashSet<Integer> b);
 
     HashSet<String> getC();
 
@@ -27,7 +26,7 @@ public interface TestData {
 
     void setE(long e);
 
-    boolean isF();
+    boolean getF();
 
     void setF(boolean f);
 }

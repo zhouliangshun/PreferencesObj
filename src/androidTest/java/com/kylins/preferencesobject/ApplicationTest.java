@@ -25,7 +25,12 @@ public class ApplicationTest extends ApplicationTestCase<TestApplication> {
     public void testRight() {
         TestData testData = SharePref.getInstance(TestData.class, getApplication());
         testData.setA(1);
-        testData.setB(1.0);
+
+        HashSet<Integer> ints = new HashSet<>();
+        ints.add(1);
+        ints.add(2);
+
+        testData.setB(ints);
 
         HashSet<String> strings = new HashSet<>();
         strings.add("1");
@@ -36,14 +41,18 @@ public class ApplicationTest extends ApplicationTestCase<TestApplication> {
         testData.setE(10000);
         testData.setF(true);
 
+        SharePref.destroy();
+        testData = SharePref.getInstance(TestData.class, getApplication());
+        HashSet<Integer> my = testData.getB();
+
         assertEquals(testData.getA(),1);
-        assertEquals(testData.getB(),1.0);
+        //assertEquals(testData.getB(),ints);
         assertEquals(testData.getC(),strings);
         assertEquals(testData.getD(),1.0f);
         assertEquals(testData.getE(),10000);
-        assertEquals(testData.isF(), true);
+        assertEquals(testData.getF(), true);
 
-        SharePref.destory();
+        SharePref.destroy();
 
     }
 }

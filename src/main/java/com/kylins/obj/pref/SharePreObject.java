@@ -11,42 +11,22 @@ import java.lang.reflect.Proxy;
 import java.util.Set;
 
 
-
 /**
  * Created by zhouliangshun on 2016/6/22.
  */
-class SharePreObject<T> {
+class SharePreObject<T> implements InvocationHandler {
 
     private Class<T> mClass;
     private T object;
-    private  SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     SharePreObject(Class<T> objClass, Context context) {
         mClass = objClass;
         try {
             sharedPreferences = context.getSharedPreferences(mClass.getName(), Application.MODE_PRIVATE);
-            Object obj = Proxy.newProxyInstance(objClass.getClassLoader(), new Class[]{objClass}, new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Object obj = Proxy.newProxyInstance(objClass.getClassLoader(), new Class[]{objClass}, this);
 
-                    String methodName = method.getName();
-                    if((args == null || args.length == 0)&&methodName.startsWith("get")){
-                        Object obj = getFieldValue(method,args);
-                        if(obj!=null){
-                            return obj;
-                        }
-                    }
-
-                    if (args != null && args.length == 1 && (methodName.startsWith("set"))) {
-                        setFieldValue(method,args);
-                        return null;
-                    }
-
-                    return method.invoke(proxy,args);
-                }
-            });
-
-            if(obj != null){
+            if (obj != null) {
                 object = (T) obj;
             }
 
@@ -55,8 +35,9 @@ class SharePreObject<T> {
         }
     }
 
-    void destroy(){
+    void destroy() {
         object = null;
+        sharedPreferences = null;
     }
 
     T get() {
@@ -64,46 +45,46 @@ class SharePreObject<T> {
     }
 
     /**
-     * process get bean
+     * process get value
+     *
      * @param method
      * @param args
      * @return
      */
-    private Object getFieldValue(Method method, Object[] args){
+    private Object getFieldValue(Method method, Object[] args) {
         //获取变量名
         String fieldName = method.getName().substring(3);
+        //保存对象
+        Class type = method.getReturnType();
         if (!TextUtils.isEmpty(fieldName)) {
             //检查名字是否存在
             try {
-                //保存对象
-                Class type = method.getReturnType();
                 switch (type.getSimpleName()) {
                     case "String":
-                        return sharedPreferences.getString(fieldName,null);
+                        return sharedPreferences.getString(fieldName, null);
                     case "Integer":
                     case "int":
-                        return sharedPreferences.getInt(fieldName,0);
+                        return sharedPreferences.getInt(fieldName, 0);
                     case "Boolean":
                     case "boolean":
-                        return sharedPreferences.getBoolean(fieldName,false);
+                        return sharedPreferences.getBoolean(fieldName, false);
                     case "Long":
                     case "long":
-                        return sharedPreferences.getLong(fieldName,0);
+                        return sharedPreferences.getLong(fieldName, 0);
                     case "Float":
                     case "float":
-                        return sharedPreferences.getFloat(fieldName,0.0f);
+                        return sharedPreferences.getFloat(fieldName, 0.0f);
                 }
 
-                if (type.isAssignableFrom(Set.class)) {//check is set
+                if (Set.class.isAssignableFrom(type)) {//check is set
                     try {
-                        type.getMethod("add", String.class);//check is Set<String>
                         Set<String> newSet = (Set<String>) type.newInstance();
                         Set<String> oldSet = sharedPreferences.getStringSet(fieldName, null);
-                        if(oldSet!=null){
+                        if (oldSet != null) {
                             newSet.addAll(oldSet);
                         }
                         return newSet;
-                    } catch (NoSuchMethodException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -111,62 +92,62 @@ class SharePreObject<T> {
                 ex.printStackTrace();
             }
         }
-
-        return null;
+        throw new RuntimeException("Not support this type for SharePre Bean:" + type.getName());
     }
 
     /**
+     * process set value
      *
      * @param method
      * @param args
      */
-    private void  setFieldValue(Method method, Object[] args){
+    private void setFieldValue(Method method, Object[] args) {
         //获取变量名
         String fieldName = method.getName().substring(3);
+        Class type = args[0].getClass();
         if (!TextUtils.isEmpty(fieldName)) {
             //检查名字是否存在
             try {
                 //保存对象
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                Class type = args[0].getClass();
                 switch (type.getSimpleName()) {
                     case "String": {
                         editor.putString(fieldName, (String) args[0]);
                         editor.apply();
                     }
-                    break;
+                    return;
                     case "Integer":
                     case "int": {
                         editor.putInt(fieldName, (Integer) args[0]);
                         editor.apply();
                     }
-                    break;
+                    return;
                     case "Boolean":
                     case "boolean": {
                         editor.putBoolean(fieldName, (Boolean) args[0]);
                         editor.apply();
                     }
-                    break;
+                    return;
                     case "Long":
                     case "long": {
                         editor.putLong(fieldName, (Long) args[0]);
                         editor.apply();
                     }
-                    break;
+                    return;
                     case "Float":
                     case "float": {
                         editor.putFloat(fieldName, (Float) args[0]);
                         editor.apply();
                     }
-                    break;
+                    return;
                 }
 
-                if (type.isAssignableFrom(Set.class)) {//check is set
+                if (Set.class.isAssignableFrom(type)) {//check is set
                     try {
-                        type.getMethod("add", String.class);//check is Set<String>
                         editor.putStringSet(fieldName, (Set<String>) args[0]);
                         editor.apply();
-                    } catch (NoSuchMethodException e) {
+                        return;
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -174,24 +155,27 @@ class SharePreObject<T> {
                 ex.printStackTrace();
             }
         }
+
+        throw new RuntimeException("Not support this type for SharePre Bean:" + type.getName());
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
+        // If the method is a method from Object then defer to normal invocation.
+        if (method.getDeclaringClass() == Object.class) {
+            return method.invoke(this, args);
+        }
+
         String methodName = method.getName();
-        if((args == null || args.length == 0)&&methodName.startsWith("get")){
-            Object obj = getFieldValue(method,args);
-            if(obj!=null){
-                return obj;
-            }
+        if ((args == null || args.length == 0) && methodName.startsWith("get")) {
+            return getFieldValue(method, args);
         }
 
         if (args != null && args.length == 1 && (methodName.startsWith("set"))) {
-            setFieldValue(method,args);
-            return null;
+            setFieldValue(method, args);
         }
 
-       return method.invoke(proxy,args);
+        return null;
     }
 }
 

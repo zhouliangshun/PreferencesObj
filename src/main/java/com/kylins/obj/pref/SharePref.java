@@ -3,11 +3,9 @@ package com.kylins.obj.pref;
 /**
  * Save object to  SharedPreferences，only support type: String,Set<String>,int,long,boolean,float
  * Usage:
- *      1) Create a class and write field of you will save it!
- *      2) Create a field set method (name is setFieldName)
- *      3) Use SharePref.getInstance get instance. and if you wang to save, just call object set method.
- *      4) If you want to reload just class SharePref.reload
- *      5) You should call SharePref.destroy to release all singleton instance.
+ *      1) Create a interface and write get and set for your metadata(the set<Name> and get<Name> must be same
+ *      2) Use SharePref.getInstance get instance. and if you wang to save, just call object set method.
+ *      3) You should call SharePref.destroy to release all singleton instance.
  */
 
 import android.content.Context;
@@ -49,7 +47,7 @@ public class SharePref {
     /**
      * Destory all singleton instance
      */
-    public static void destory(){
+    public static void destroy(){
         for(HashMap.Entry<String,SharePreObject> entry : instances.entrySet()){
             entry.getValue().destroy();
         }
