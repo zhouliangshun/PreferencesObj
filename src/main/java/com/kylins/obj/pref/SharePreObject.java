@@ -52,12 +52,12 @@ class SharePreObject<T> implements InvocationHandler {
      * @return
      */
     private Object getFieldValue(Method method, Object[] args) {
-        //获取变量名
+        //get file name
         String fieldName = method.getName().substring(3);
-        //保存对象
+        //get return value type
         Class type = method.getReturnType();
         if (!TextUtils.isEmpty(fieldName)) {
-            //检查名字是否存在
+            //check the file is in share preference
             try {
                 switch (type.getSimpleName()) {
                     case "String":
@@ -102,11 +102,11 @@ class SharePreObject<T> implements InvocationHandler {
      * @param args
      */
     private void setFieldValue(Method method, Object[] args) {
-        //获取变量名
+        //get file name
         String fieldName = method.getName().substring(3);
         Class type = args[0].getClass();
         if (!TextUtils.isEmpty(fieldName)) {
-            //检查名字是否存在
+            //check the name is exits
             try {
                 //保存对象
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -178,66 +178,3 @@ class SharePreObject<T> implements InvocationHandler {
         return null;
     }
 }
-
-//    @Override
-//        method for cglib out date
-//    public Object intercept(Object o, Object[] args, MethodProxy methodProxy) throws Exception {
-//        Object object = methodProxy.invokeSuper(o, args);
-//        String methodName = methodProxy.getMethodName();
-//        if (args != null && args.length == 1 && methodName.startsWith("set")) {
-//            //获取变量名
-//            String fieldName = methodName.substring(3);
-//            if (!TextUtils.isEmpty(fieldName)) {
-//                //检查名字是否存在
-//                try {
-//                    Field field = mClass.getDeclaredField(StringUtils.lowerFristChar(fieldName));
-////                   Field field  = mClass.getField(fieldName);
-//                    //保存对象
-//                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(mClass.getName(), Application.MODE_PRIVATE);
-//                    SharedPreferences.Editor editor = sharedPreferences.edit();
-//                    Class type = field.getType();
-//                    String name = field.getName();
-//                    switch (type.getSimpleName()) {
-//                        case "StringSet": {
-//                            editor.putStringSet(name, (StringSet) args[0]);
-//                            editor.apply();
-//                        }
-//                        break;
-//                        case "String": {
-//                            editor.putString(name, (String) args[0]);
-//                            editor.apply();
-//                        }
-//                        break;
-//                        case "Integer":
-//                        case "int": {
-//                            editor.putInt(name, (Integer) args[0]);
-//                            editor.apply();
-//                        }
-//                        break;
-//                        case "Boolean":
-//                        case "boolean": {
-//                            editor.putBoolean(name, (Boolean) args[0]);
-//                            editor.apply();
-//                        }
-//                        break;
-//                        case "Long":
-//                        case "long": {
-//                            editor.putLong(name, (Long) args[0]);
-//                            editor.apply();
-//                        }
-//                        break;
-//                        case "Float":
-//                        case "float": {
-//                            editor.putFloat(name, (Float) args[0]);
-//                            editor.apply();
-//                        }
-//                        break;
-//                    }
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        return object;
-//    }

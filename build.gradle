@@ -8,20 +8,23 @@ allprojects {
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+
     }
     dependencies {
         //classpath 'me.tatarka:gradle-retrolambda:3.2.3'
         classpath 'com.android.tools.build:gradle:2.2.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
-        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 22
@@ -31,7 +34,6 @@ android {
         versionCode 1
         versionName "1.0"
         minSdkVersion 18
-        testInstrumentationRunner "com.kylins.preferencesobject.TestInstumentation"
     }
     buildTypes {
         release {
@@ -54,22 +56,82 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.+'
 }
 
-//上传到服务器
-apply plugin: 'maven'
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "http://10.18.49.13:8081/nexus/content/repositories/qiku/") {
-                authentication(userName: 'admin', password: 'admin123')
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+version = "1.0.0-beta"
+
+bintray  {
+    user = project.property("bintray.user")
+    key = project.property("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = 'libs'
+        name = 'PreferencesObj'
+        userOrg = 'kylins'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/zhouliangshun/PreferencesObj.git'
+        websiteUrl  = 'https://github.com/zhouliangshun/PreferencesObj'
+        githubRepo  = 'zhouliangshun/PreferencesObj'
+        desc = 'It\'s sample android save a object to SharePreferences'
+
+        version {
+            name = '1.0.0-beta'
+            released  = new Date()
+            vcsTag = '1.0.0-beta'
+            desc = 'It\'s a frist develop version'
+        }
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name 'PreferencesObj'
+            description 'It\'s sample android save a object to SharePreferences'
+            url 'https://github.com/zhouliangshun/PreferencesObj'
+            inceptionYear '2016'
+
+            packaging 'aar'
+            groupId 'com.kylins.libs'
+            artifactId 'preferences-object'
+            version '1.0.0-beta'
+
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
             }
-            snapshotRepository(url: "http://10.18.49.13:8081/nexus/content/repositories/snapshots") {
-                authentication(userName: 'admin', password: 'admin123')
+            scm {
+                connection 'https://github.com/zhouliangshun/PreferencesObj.git'
+                url 'https://github.com/zhouliangshun/PreferencesObj'
+
             }
-            project.group = "com.qiku.lib"
-            pom.project{
-                artifactId "preferencesobject"
-                project.version "0.1"
+            developers {
+                developer {
+                    name 'zhouliangshun'
+                    id 'zhouliangshun'
+                    email 'liangshunzhou@hotmail.com'
+                }
             }
         }
     }
 }
+
+

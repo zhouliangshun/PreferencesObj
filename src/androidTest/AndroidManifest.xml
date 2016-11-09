@@ -4,7 +4,6 @@
     <uses-permission android:name="android.permission.RUN_INSTRUMENTATION" />
 
     <application
-        android:name="com.kylins.preferencesobject.TestApplication"
         android:allowBackup="true"
         android:label="TestPrefObj"
         android:supportsRtl="true">

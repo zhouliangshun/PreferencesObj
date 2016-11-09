@@ -23,8 +23,8 @@ public class SharePref {
      * Get instance of yor class wil persistence to share preferences
      * @param beanClass  Class of persistence object
      * @param context Android context
-     * @param <T> Genericity <T> of persistence object
-     * @return <T> Singleton instance of persistence object
+     * @param <T> Genericity type T of persistence object
+     * @return Singleton instance of persistence object
      */
     public static <T>  T getInstance(Class<T> beanClass,Context context) {
         if(instances.containsKey(beanClass)){
@@ -45,7 +45,7 @@ public class SharePref {
     }
 
     /**
-     * Destory all singleton instance
+     * Destroy all singleton instance
      */
     public static void destroy(){
         for(HashMap.Entry<String,SharePreObject> entry : instances.entrySet()){

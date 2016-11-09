@@ -15,18 +15,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * 对象拷贝
+ * Object Copy
  * Created by zhouliangshun on 2016/8/4.
  */
 public class ObjectCopy {
 
     /**
-     * 拷贝对象，值拷贝
+     * ObjectCopy,Only copy values
      *
-     * @param targetClass
-     * @param source
-     * @param <T>
-     * @return
+     * @param targetClass target class
+     * @param source source the values from the instance
+     * @param <T> convert to the type
+     * @return Target class instance
      */
     public static <T> T copy(Class<T> targetClass, Object source) {
         return copy(newInstance(targetClass), source);

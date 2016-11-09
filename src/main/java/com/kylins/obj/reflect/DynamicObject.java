@@ -5,8 +5,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**动态对象,利用反射调用对象的方法
- * Created by j-zhouliangshun on 2016/6/15.
+/**
+ * Dynamic objects, using the reflection method invocation object
+ * Created by zhouliangshun on 2016/6/15.
  */
 public class DynamicObject {
 
@@ -15,9 +16,9 @@ public class DynamicObject {
     private Class instanceClass;
 
     /**
-     * 构造一个反射的对象
-     * @param className 对象名字
-     * @param args 参数，参数个数必须小于10
+     * To construct a reflection of objects
+     * @param className class name
+     * @param args args
      */
     public DynamicObject(String className, Object ...args){
 
@@ -45,8 +46,8 @@ public class DynamicObject {
     }
 
     /**
-     * 从对象创建一个动态调用对象
-     * @param object
+     * Construct a DynamicObject from a instance object
+     * @param object instance
      */
     public DynamicObject(Object object){
         if(object!=null){
@@ -57,9 +58,9 @@ public class DynamicObject {
     }
 
     /**
-     * 判断是否有某个
-     * @param className
-     * @return
+     * Assert the class is exits
+     * @param className class of you will assert
+     * @return true is exits false is not
      */
     public static boolean hasClass(String className){
         Class cls = null;
@@ -71,6 +72,12 @@ public class DynamicObject {
         return cls!=null;
     }
 
+    /**
+     * Create a instance from a class, The class must have a zero args construct Method
+     * @param className class of the new instance
+     * @param <T> the object class type
+     * @return new instance
+     */
     public static <T>  T newInstance(String className){
         try {
             return (T)Class.forName(className).newInstance();
@@ -85,11 +92,11 @@ public class DynamicObject {
     }
 
     /**
-     * 反射调用方法
-     * @param name 方法名字
-     * @param args 参数，参数个数小于10
-     * @param <T> 返回的类型
-     * @return
+     * call some method
+     * @param name method name
+     * @param args args
+     * @param <T> return
+     * @return return the method return
      */
     public<T> T call(String name,Object ...args){
 
@@ -145,9 +152,9 @@ public class DynamicObject {
     }
 
     /**
-     * 获取一个公共属性，已动态对象返回
-     * @param name 属性名称
-     * @return
+     * Get public file the field packaging a DynamicObject
+     * @param name field name
+     * @return file of DynamicObject
      */
     public DynamicObject field(String name){
 
@@ -168,9 +175,10 @@ public class DynamicObject {
     }
 
     /**
-     * 获取一个公共属性，已实际对象返回
-     * @param name 属性名称
-     * @return
+     * et public file the field,raw filed type
+     * @param name field name
+     * @param <T> the raw type
+     * @return field name
      */
     public<T> T getFieldValue(String name){
         if(instanceClass==null||instance==null)
