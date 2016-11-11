@@ -5,8 +5,9 @@ It's sample android save a object to SharePreferences
 
 In your `build.gradle`
 
+```gradle
 compile 'com.kylins.libs:preferences-object:1.0.0-beta'
-
+```
 ### Save object to SharePreferences:
   ```java
   //add data class
