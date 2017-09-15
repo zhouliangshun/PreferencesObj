@@ -48,7 +48,7 @@ compile 'com.kylins.libs:preferences-object:1.0.0-beta'
   
 ## License
 
-    Copyright 2015 Square, Inc.
+    Copyright 2010 Kylins.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
