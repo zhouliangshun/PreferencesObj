@@ -73,7 +73,7 @@ artifacts {
     archives sourcesJar
 }
 
-version = "1.0.0-beta"
+version = "1.0.0"
 
 bintray  {
     user = project.property("bintray.user")
@@ -90,9 +90,9 @@ bintray  {
         desc = 'It\'s sample android save a object to SharePreferences'
 
         version {
-            name = '1.0.0-beta'
+            name = '1.0.0'
             released  = new Date()
-            vcsTag = '1.0.0-beta'
+            vcsTag = '1.0.0'
             desc = 'It\'s a frist develop version'
         }
     }
@@ -109,7 +109,7 @@ install {
             packaging 'aar'
             groupId 'com.kylins.libs'
             artifactId 'preferences-object'
-            version '1.0.0-beta'
+            version '1.0.0'
 
             licenses {
                 license {
