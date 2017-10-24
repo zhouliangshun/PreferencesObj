@@ -18,12 +18,27 @@ class SharePreObject<T> implements InvocationHandler {
 
     private Class<T> mClass;
     private T object;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences mSharedPreferences;
 
-    SharePreObject(Class<T> objClass, Context context) {
+    /**
+     * Cu
+     *
+     * @param objClass
+     * @param context
+     */
+    SharePreObject(Context context, Class<T> objClass) {
+        this(context, objClass, context.getSharedPreferences(objClass.getName(), Application.MODE_PRIVATE));
+    }
+
+    /**
+     * @param objClass
+     * @param context
+     * @param sharedPreferences
+     */
+    SharePreObject(Context context, Class<T> objClass, SharedPreferences sharedPreferences) {
         mClass = objClass;
         try {
-            sharedPreferences = context.getSharedPreferences(mClass.getName(), Application.MODE_PRIVATE);
+            mSharedPreferences = sharedPreferences;
             Object obj = Proxy.newProxyInstance(objClass.getClassLoader(), new Class[]{objClass}, this);
 
             if (obj != null) {
@@ -37,7 +52,7 @@ class SharePreObject<T> implements InvocationHandler {
 
     void destroy() {
         object = null;
-        sharedPreferences = null;
+        mSharedPreferences = null;
     }
 
     T get() {
@@ -61,25 +76,25 @@ class SharePreObject<T> implements InvocationHandler {
             try {
                 switch (type.getSimpleName()) {
                     case "String":
-                        return sharedPreferences.getString(fieldName, null);
+                        return mSharedPreferences.getString(fieldName, null);
                     case "Integer":
                     case "int":
-                        return sharedPreferences.getInt(fieldName, 0);
+                        return mSharedPreferences.getInt(fieldName, 0);
                     case "Boolean":
                     case "boolean":
-                        return sharedPreferences.getBoolean(fieldName, false);
+                        return mSharedPreferences.getBoolean(fieldName, false);
                     case "Long":
                     case "long":
-                        return sharedPreferences.getLong(fieldName, 0);
+                        return mSharedPreferences.getLong(fieldName, 0);
                     case "Float":
                     case "float":
-                        return sharedPreferences.getFloat(fieldName, 0.0f);
+                        return mSharedPreferences.getFloat(fieldName, 0.0f);
                 }
 
                 if (Set.class.isAssignableFrom(type)) {//check is set
                     try {
                         Set<String> newSet = (Set<String>) type.newInstance();
-                        Set<String> oldSet = sharedPreferences.getStringSet(fieldName, null);
+                        Set<String> oldSet = mSharedPreferences.getStringSet(fieldName, null);
                         if (oldSet != null) {
                             newSet.addAll(oldSet);
                         }
@@ -104,12 +119,21 @@ class SharePreObject<T> implements InvocationHandler {
     private void setFieldValue(Method method, Object[] args) {
         //get file name
         String fieldName = method.getName().substring(3);
+
+        // new value is null,remove from store
+        if (args.length == 0 || args[0] == null) {
+            if (mSharedPreferences.contains(fieldName)) {
+                mSharedPreferences.edit().remove(fieldName).apply();
+            }
+            return;
+        }
+
         Class type = args[0].getClass();
         if (!TextUtils.isEmpty(fieldName)) {
             //check the name is exits
             try {
                 //保存对象
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
                 switch (type.getSimpleName()) {
                     case "String": {
                         editor.putString(fieldName, (String) args[0]);

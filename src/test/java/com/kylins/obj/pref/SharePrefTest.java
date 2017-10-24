@@ -1,6 +1,8 @@
 package com.kylins.obj.pref;
 
-import android.os.Build;
+import android.app.Application;
+
+import com.kylins.obj.pref.annotation.SharedPreferencesName;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,55 +24,208 @@ public class SharePrefTest {
     @Test
     public void getInstance() throws Exception {
 
-        TestData testData = SharePref.getInstance(TestData.class, RuntimeEnvironment.application);
-        testData.setA(1);
-        testData.setB(1.0);
+        TestData testData = SharePref.getInstance(RuntimeEnvironment.application, TestData.class);
+        testData.setInt(1);
+
+        HashSet<Integer> ints = new HashSet<>();
+        ints.add(1);
+        ints.add(2);
+
+        testData.setIntSet(ints);
+
+        testData.setString("123");
 
         HashSet<String> strings = new HashSet<>();
         strings.add("1");
         strings.add("2");
-        testData.setC(strings);
+        testData.setStringSet(strings);
 
-        testData.setD(1.0f);
-        testData.setE(10000);
-        testData.setF(true);
+        testData.setFloat(1.0f);
+        testData.setLong(10000);
+        testData.setBoolean(true);
 
-        assertEquals(testData.getA(), 1);
-        assertEquals(testData.getB(), 1.0);
-        assertEquals(testData.getC(), strings);
-        assertEquals(testData.getD(), 1.0f);
-        assertEquals(testData.getE(), 10000);
-        assertEquals(testData.isF(), true);
+        SharePref.destroy();
+        testData = SharePref.getInstance(RuntimeEnvironment.application, TestData.class);
+        Set<Integer> my = testData.getIntSet();
+
+        assertEquals(1, testData.getInt());
+        assertEquals("123", testData.getString());
+        assertEquals(strings, testData.getStringSet());
+        assertEquals(ints, testData.getIntSet());
+        assertEquals(1.0f, testData.getFloat(), 0.0f);
+        assertEquals(10000, testData.getLong());
+        assertEquals(true, testData.getBoolean());
 
         SharePref.destroy();
 
     }
 
+    @Test
+    public void testChangeSharePrefName() {
+        TestData testData = SharePref.getInstance(RuntimeEnvironment.application, TestData.class);
+        testData.setInt(1);
+
+        HashSet<Integer> ints = new HashSet<>();
+        ints.add(1);
+        ints.add(2);
+
+        testData.setIntSet(ints);
+
+        testData.setString("123");
+
+        HashSet<String> strings = new HashSet<>();
+        strings.add("1");
+        strings.add("2");
+        testData.setStringSet(strings);
+
+        testData.setFloat(1.0f);
+        testData.setLong(10000);
+        testData.setBoolean(true);
+
+        SharePref.destroy();
+        TestData2 testData2 = SharePref.getInstance(RuntimeEnvironment.application, TestData2.class);
+
+        assertEquals(1, testData2.getInt());
+        assertEquals("123", testData2.getString());
+        assertEquals(strings, testData2.getStringSet());
+        assertEquals(ints, testData2.getIntSet());
+        assertEquals(1.0f, testData2.getFloat(), 0.0f);
+        assertEquals(10000, testData2.getLong());
+        assertEquals(true, testData2.getBoolean());
+
+        SharePref.destroy();
+    }
+
+    @Test
+    public void testChangeSharePrefInstance() {
+        TestData testData = SharePref.getInstance(RuntimeEnvironment.application, TestData.class);
+        testData.setInt(1);
+
+        HashSet<Integer> ints = new HashSet<>();
+        ints.add(1);
+        ints.add(2);
+
+        testData.setIntSet(ints);
+
+        testData.setString("123");
+
+        HashSet<String> strings = new HashSet<>();
+        strings.add("1");
+        strings.add("2");
+        testData.setStringSet(strings);
+
+        testData.setFloat(1.0f);
+        testData.setLong(10000);
+        testData.setBoolean(true);
+
+        SharePref.destroy();
+        TestData3 testData3 = SharePref.getInstance(RuntimeEnvironment.application, TestData3.class,
+                RuntimeEnvironment.application.getSharedPreferences("com.kylins.preferencesobject.SharePrefTest$TestData", Application.MODE_PRIVATE));
+
+        assertEquals(1, testData3.getInt());
+        assertEquals("123", testData3.getString());
+        assertEquals(strings, testData3.getStringSet());
+        assertEquals(ints, testData3.getIntSet());
+        assertEquals(1.0f, testData3.getFloat(), 0.0f);
+        assertEquals(10000, testData3.getLong());
+        assertEquals(true, testData3.getBoolean());
+
+        SharePref.destroy();
+    }
+
+
     public interface TestData {
 
-        int getA();
+        int getInt();
 
-        void setA(int a);
+        void setInt(int a);
 
-        double getB();
+        HashSet<Integer> getIntSet();
 
-        void setB(double b);
+        void setIntSet(HashSet<Integer> value);
 
-        HashSet<String> getC();
+        HashSet<String> getStringSet();
 
-        void setC(HashSet<String> c);
+        void setStringSet(HashSet<String> value);
 
-        float getD();
+        String getString();
 
-        void setD(float d);
+        void setString(String value);
 
-        long getE();
+        float getFloat();
 
-        void setE(long e);
+        void setFloat(float value);
 
-        boolean isF();
+        long getLong();
 
-        void setF(boolean f);
+        void setLong(long value);
+
+        boolean getBoolean();
+
+        void setBoolean(boolean value);
+    }
+
+    @SharedPreferencesName("com.kylins.preferencesobject.SharePrefTest$TestData")
+    public interface TestData2 {
+
+        int getInt();
+
+        void setInt(int a);
+
+        HashSet<Integer> getIntSet();
+
+        void setIntSet(HashSet<Integer> value);
+
+        HashSet<String> getStringSet();
+
+        void setStringSet(HashSet<String> value);
+
+        String getString();
+
+        void setString(String value);
+
+        float getFloat();
+
+        void setFloat(float value);
+
+        long getLong();
+
+        void setLong(long value);
+
+        boolean getBoolean();
+
+        void setBoolean(boolean value);
+    }
+
+    public interface TestData3 {
+
+        int getInt();
+
+        void setInt(int a);
+
+        HashSet<Integer> getIntSet();
+
+        void setIntSet(HashSet<Integer> value);
+
+        HashSet<String> getStringSet();
+
+        void setStringSet(HashSet<String> value);
+
+        String getString();
+
+        void setString(String value);
+
+        float getFloat();
+
+        void setFloat(float value);
+
+        long getLong();
+
+        void setLong(long value);
+
+        boolean getBoolean();
+
+        void setBoolean(boolean value);
     }
 
 }

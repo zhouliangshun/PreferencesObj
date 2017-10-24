@@ -1,11 +1,14 @@
 package com.kylins.preferencesobject;
 
+import com.kylins.obj.pref.annotation.SharedPreferencesName;
+
 import java.util.HashSet;
 
 /**
  * Created by j-zhouliangshun on 2016/6/24.
  */
-public interface TestData {
+@SharedPreferencesName("com.kylins.preferencesobject.TestData")
+public interface TestData2 {
 
     int getInt();
     void setInt(int a);

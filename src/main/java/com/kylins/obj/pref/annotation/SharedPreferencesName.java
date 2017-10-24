@@ -1,4 +1,6 @@
-package com.kylins.obj.copy.annotation;
+package com.kylins.obj.pref.annotation;
+
+import android.content.SharedPreferences;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -7,10 +9,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by zhouliangshun on 2016/8/4.
+ * Created by zhouliangshun on 2017/10/24.
  */
-@Target(ElementType.FIELD)
+
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited()
-public @interface Ignore {
+public @interface SharedPreferencesName {
+
+    String value();
 }
