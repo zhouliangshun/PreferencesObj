@@ -6,7 +6,7 @@ It's sample android save a object to SharePreferences
 In your `build.gradle`
 
 ```gradle
-compile 'com.kylins.libs:preferences-object:1.0.0-beta'
+compile 'com.kylins.libs:preferences-object:1.0.0'
 ```
 ### Save object to SharePreferences:
   ```java
@@ -19,7 +19,7 @@ compile 'com.kylins.libs:preferences-object:1.0.0-beta'
   }
   
   //Get instance
-  Data data = SharePref.getInstance(Data.class);
+  Data data = SharePref.getInstance(context, Data.class);
   Just use data.set to 'set' value and 'get' value.
   ```
   

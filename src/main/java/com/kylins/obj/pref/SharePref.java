@@ -30,7 +30,7 @@ public class SharePref {
      * @param context   Android context
      * @param <T>       Generality type T of persistence object
      * @return Singleton instance of persistence object
-     * @deprecated Please use new method <see>getInstance(Context context, Class<T> beanClass)</see>
+     * @deprecated Please use new method <code>getInstance(Context context, Class beanClass)</code>
      */
     public static <T> T getInstance(Class<T> beanClass, Context context) {
         if (instances.containsKey(beanClass)) {
@@ -70,7 +70,7 @@ public class SharePref {
         SharedPreferencesName sharedPreferencesName = beanClass.getAnnotation(SharedPreferencesName.class);
         SharePreObject<T> object = null;
         if (sharedPreferencesName != null) {
-            object = new SharePreObject<T>(context, beanClass, context.getSharedPreferences(sharedPreferencesName.value(), Application.MODE_PRIVATE));
+            object = new SharePreObject<T>(beanClass, context.getSharedPreferences(sharedPreferencesName.value(), Application.MODE_PRIVATE));
         } else {
             object = new SharePreObject<T>(context, beanClass);
         }
@@ -99,7 +99,7 @@ public class SharePref {
             instances.remove(beanClass);
         }
 
-        SharePreObject<T> object = new SharePreObject<T>(context, beanClass, sharedPreferences);
+        SharePreObject<T> object = new SharePreObject<T>(beanClass, sharedPreferences);
         if (object.get() == null) {
             throw new NullPointerException("Can't build class:" + beanClass.getName());
         }

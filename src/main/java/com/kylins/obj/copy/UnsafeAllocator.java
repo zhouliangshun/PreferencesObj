@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
  * @author Joel Leitch
  * @author Jesse Wilson
  */
-public abstract class UnsafeAllocator {
+abstract class UnsafeAllocator {
     public abstract <T> T newInstance(Class<T> c) throws Exception;
 
     public static UnsafeAllocator create() {

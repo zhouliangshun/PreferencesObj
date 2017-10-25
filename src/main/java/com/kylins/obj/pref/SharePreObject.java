@@ -21,21 +21,20 @@ class SharePreObject<T> implements InvocationHandler {
     private SharedPreferences mSharedPreferences;
 
     /**
-     * Cu
+     * Construct method
      *
-     * @param objClass
-     * @param context
+     * @param objClass Data target class
+     * @param context  Android application context
      */
     SharePreObject(Context context, Class<T> objClass) {
-        this(context, objClass, context.getSharedPreferences(objClass.getName(), Application.MODE_PRIVATE));
+        this(objClass, context.getSharedPreferences(objClass.getName(), Application.MODE_PRIVATE));
     }
 
     /**
-     * @param objClass
-     * @param context
-     * @param sharedPreferences
+     * @param objClass          Data target class
+     * @param sharedPreferences Android SharedPreferences instance
      */
-    SharePreObject(Context context, Class<T> objClass, SharedPreferences sharedPreferences) {
+    SharePreObject(Class<T> objClass, SharedPreferences sharedPreferences) {
         mClass = objClass;
         try {
             mSharedPreferences = sharedPreferences;

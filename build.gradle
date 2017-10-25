@@ -1,13 +1,7 @@
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
         maven {
             url 'http://maven.aliyun.com/nexus/content/groups/public/'
         }
@@ -16,15 +10,26 @@ buildscript {
     dependencies {
         //classpath 'me.tatarka:gradle-retrolambda:3.2.3'
         classpath 'com.android.tools.build:gradle:2.2.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+    //id "com.github.dcendents.android-maven" version "2.0"
+}
 
-apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
+version = "1.0.0"
+project.group = "com.kylins.libs"
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+
+    apply plugin: 'com.android.library'
+    apply plugin: 'com.github.dcendents.android-maven'
+}
 
 android {
     compileSdkVersion 22
@@ -73,38 +78,13 @@ artifacts {
     archives sourcesJar
 }
 
-version = "1.0.0"
-
-bintray  {
-    user = project.property("bintray.user")
-    key = project.property("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = 'libs'
-        name = 'PreferencesObj'
-        userOrg = 'kylins'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/zhouliangshun/PreferencesObj.git'
-        websiteUrl  = 'https://github.com/zhouliangshun/PreferencesObj'
-        githubRepo  = 'zhouliangshun/PreferencesObj'
-        desc = 'It\'s sample android save a object to SharePreferences'
-
-        version {
-            name = '1.0.0'
-            released  = new Date()
-            vcsTag = '1.0.0'
-            desc = 'It\'s a frist develop version'
-        }
-    }
-}
-
 install {
     repositories.mavenInstaller {
         pom.project {
             name 'PreferencesObj'
             description 'It\'s sample android save a object to SharePreferences'
             url 'https://github.com/zhouliangshun/PreferencesObj'
-            inceptionYear '2016'
+            inceptionYear '2017'
 
             packaging 'aar'
             groupId 'com.kylins.libs'
@@ -130,8 +110,66 @@ install {
                     email 'liangshunzhou@hotmail.com'
                 }
             }
+
+//            pom.withXml {
+//                configurations.compile.allDependencies.each {
+//                    def dependencyNode = dependenciesNode.appendNode('dependency')
+//                    dependencyNode.appendNode('groupId', it.group)
+//                    dependencyNode.appendNode('artifactId', it.name)
+//                    dependencyNode.appendNode('version', it.version)
+//                }
+//            }
         }
     }
 }
+
+bintray {
+    user = project.property("bintray.user")
+    key = project.property("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'kylins'
+        name = 'PreferencesObj'
+        userOrg = 'zhouliangshun'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/zhouliangshun/PreferencesObj.git'
+        websiteUrl = 'https://github.com/zhouliangshun/PreferencesObj'
+        githubRepo = 'zhouliangshun/PreferencesObj'
+        desc = 'It\'s sample android save a object to SharePreferences'
+        githubReleaseNotesFile = 'README.md'
+
+        dryRun = false //[Default: false] Whether to run this as dry-run, without deploying
+        publish = true //[Default: false] Whether version should be auto published after an upload
+        override = false //[Default: false] Whether to override version artifacts already published
+
+        version {
+            name = '1.0.0'
+            released = new Date()
+            vcsTag = '1.0.0'
+            desc = 'It\'s a frist develop version'
+
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = project.property("bintray.gpg.passphrase")
+                //Optional. The passphrase for GPG signing'
+            }
+
+            mavenCentralSync {
+                sync = true
+                //[Default: true] Determines whether to sync the version to Maven Central.
+                user = project.property("bintray.maven.user") //OSS user token: mandatory
+                password = project.property("bintray.maven.password") //OSS user password: mandatory
+                close = '1'
+                //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            }
+
+        }
+
+
+    }
+}
+
+
 
 
